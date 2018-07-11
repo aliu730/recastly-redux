@@ -8,53 +8,56 @@ import changeVideo from '../actions/currentVideo.js';
 import changeVideoList from '../actions/videoList.js';
 import exampleVideoData from '../data/exampleVideoData.js';
 import store from '../store/store.js';
+import { connect } from 'react-redux';
+import handleVideoSearch from '../actions/search.js';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
+class App extends React.Component {
+  // constructor(props) {
+  //   super(props);
 
-    this.state = {
-      videos: [],
-      currentVideo: null
-    };
-  }
+  //   this.state = {
+  //     videos: [],
+  //     currentVideo: null
+  //   };
+  // }
 
   componentDidMount() {
-    this.getYouTubeVideos('react tutorials');
+    this.props.handleSearchInputChange('react tutorials');
   }
 
-  handleVideoListEntryTitleClick(video) {
-    this.setState({currentVideo: video});
-  }
+  // handleVideoListEntryTitleClick(video) {
+  //   this.setState({currentVideo: video});
+  // }
 
-  getYouTubeVideos(query) {
-    var options = {
-      key: this.props.API_KEY,
-      query: query
-    };
+  // getYouTubeVideos(query) {
+  //   var options = {
+  //     key: this.props.API_KEY,
+  //     query: query
+  //   };
 
-    this.props.searchYouTube(options, (videos) =>
-      this.setState({
-        videos: videos,
-        currentVideo: videos[0]
-      })
-    );
-  }
+    // this.props.handleSearchInputChange(options);
+    // , (videos) =>
+    //   this.setState({
+    //     videos: videos,
+    //     currentVideo: videos[0]
+    //   })
+    // );
+  // }
 
   //TODO: swap out the React components below for the container components
   //  you wrote in the 'containers' directory.
   render() {
     return (
       <div>
-        <Nav handleSearchInputChange={this.getYouTubeVideos.bind(this)}/>
+        <Nav handleSearchInputChange={this.props.handleSearchInputChange.bind(this)}/>
         <div className="row">
           <div className="col-md-7">
-            <VideoPlayer video={this.state.currentVideo}/>
+            <VideoPlayerContainer />
           </div>
           <div className="col-md-5">
-            <VideoList
-              handleVideoListEntryTitleClick={this.handleVideoListEntryTitleClick.bind(this)}
-              videos={this.state.videos}
+            <VideoListContainer
+              // handleVideoListEntryTitleClick={this.handleVideoListEntryTitleClick.bind(this)}
+              // videos={this.state.videos}
             />
           </div>
         </div>
@@ -62,3 +65,11 @@ export default class App extends React.Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    handleSearchInputChange: (q) => dispatch(handleVideoSearch(q))
+  };
+};
+
+export default connect(null, mapDispatchToProps)(App);
